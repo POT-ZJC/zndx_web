@@ -229,7 +229,7 @@ export default {
 .top-loopPlay {
   padding-top: 0.14rem;
   height: 17%;
-  background: red;
+  // background: red;
 }
 .center-main {
   display: flex;
