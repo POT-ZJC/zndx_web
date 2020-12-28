@@ -4,14 +4,36 @@
     <Header />
     <!--  顶部实验室轮播 -->
     <div class="top-loopPlay">
-      <swiper ref="mySwiper" :options="swiperOptions">
-        <swiper-slide>Slide 1</swiper-slide>
-        <swiper-slide>Slide 2</swiper-slide>
-        <swiper-slide>Slide 3</swiper-slide>
-        <swiper-slide>Slide 4</swiper-slide>
-        <swiper-slide>Slide 5</swiper-slide>
-        <div class="swiper-pagination" slot="pagination"></div>
-      </swiper>
+      <div class="pub-box">
+        <div class="loop-button-prev">
+          <img src="/images/loop-left.svg" alt="" @click="swiper.slidePrev()" />
+        </div>
+        <div class="loop-button-next">
+          <img src="/images/loop-left.svg" alt="" @click="swiper.slideNext()" />
+        </div>
+        <swiper ref="mySwiper" :options="swiperOptions">
+    
+          <swiper-slide
+            :class="{ 'top-loop-active': topLoopId === item.index }"
+            v-for="(item, index) in topLoopPlay"
+            :key="index"
+            @click.native="topLoopId = item.index"
+          >
+            <div class="top-loop-item">
+              <div class="topLoop-item-left"></div>
+
+              <div class="topLoop-item-right">
+                <div class="right-item">实验室名称：{{ item.unitName }}</div>
+                <div class="right-item">实验室类型：{{ item.type }}</div>
+                <div class="right-item">
+                  实验室状态：
+                  <div class="item-status">{{ item.status }}</div>
+                </div>
+              </div>
+            </div>
+          </swiper-slide>
+        </swiper>  
+      </div>
     </div>
 
     <!-- 实验室 -->
@@ -108,7 +130,50 @@
                 <img class="pub-title-icon" src="/images/icon-名片.svg" />
                 实验室人员信息
               </div>
-              <div>实验室-人员信息轮播</div>
+              <div class="bottomLoopPlay-box" style="flex: 1">
+                <div class="loop-button-prev">
+                  <img
+                    src="/images/loop-left.svg"
+                    alt=""
+                    @click="mySwiperBottom.slidePrev()"
+                  />
+                </div>
+                <div class="loop-button-next">
+                  <img
+                    src="/images/loop-left.svg"
+                    alt=""
+                    @click="mySwiperBottom.slideNext()"
+                  />
+                </div>
+                <swiper ref="mySwiperBottom" :options="swiperOptions">
+                  <!-- laboratory-card -->
+                  <swiper-slide
+                    :class="{
+                      'bottom-loop-active': bottomLoopId === item.index,
+                    }"
+                    v-for="(item, index) in bottomLoopPlay"
+                    :key="index"
+                    @click.native="bottomLoopId = item.index"
+                  >
+                    <div class="bottom-loop-item">
+                      <div class="bottomLoop-item-left"></div>
+
+                      <div class="bottomLoop-item-right">
+                        <div class="right-item">姓名：{{ item.name }}</div>
+                        <div class="right-item">开始时间：{{ item.start }}</div>
+                        <div class="right-item">
+                          结束时间：
+                          {{ item.edd }}
+                        </div>
+                        <div class="right-item">
+                          备注：
+                          {{ item.desc }}
+                        </div>
+                      </div>
+                    </div>
+                  </swiper-slide>
+                </swiper>
+              </div>
             </div>
           </div>
           <!-- 实验室视频 -->
@@ -196,28 +261,82 @@ export default {
     return {
       tableData: tableData,
       swiperOptions: {
-        pagination: {
-          el: ".swiper-pagination",
-        },
-        // Some Swiper option/callback...
+        // navigation: {
+        //   nextEl: ".swiper-button-next",
+        //   prevEl: ".swiper-button-prev",
+        // },
+        loop: false,
+        speed: 1500,
+        slidesPerView: "auto",
+        spaceBetween: 15,
+        // centeredSlides: true,
+        watchSlidesProgress: true,
       },
+      topLoopId: "",
+
+      topLoopPlay: [
+        {
+          index: 1,
+          unitName: "",
+          type: "阿松大",
+          status: "使用中",
+        },
+      ],
+      bottomLoopId: "",
+      bottomLoopPlay: [
+        {
+          index: 1,
+          name: "张三",
+          start: "2020-12-12",
+          end: "2020-12-13",
+          desc: "性格阳关多金大力",
+        },
+      ],
     };
   },
-  computed:{
+  computed: {
     swiper() {
-        return this.$refs.mySwiper.$swiper
-      }
+      return this.$refs.mySwiper.$swiper;
+    },
+    mySwiperBottom() {
+      return this.$refs.mySwiperBottom.$swiper;
+    },
   },
   mounted() {
-    for (let i = 0; i < 10; i++) {
-      let demodata = { ...this.tableData[0] };
-      demodata.index = i + 1;
-      this.tableData.push(demodata);
-    }
-    this.$forceUpdate();
-    this.swiper.slideTo(3, 1000, false)
+    // this.swiper.slideTo(3, 1000, false);
+    this.reqAppointment();
+    this.reqLaboratory();
+    this.reqLaboratoryUser();
   },
-  methods: {},
+  methods: {
+    //预约
+    reqAppointment() {
+      for (let i = 0; i < 10; i++) {
+        let demodata = { ...this.tableData[0] };
+        demodata.index = i + 1;
+        this.tableData.push(demodata);
+      }
+      this.$forceUpdate();
+    },
+    //顶部轮播-实验室列表
+    reqLaboratory() {
+      for (let i = 0; i < 10; i++) {
+        let demodata = { ...this.topLoopPlay[0] };
+        demodata.index = i + 1;
+        this.topLoopPlay.push(demodata);
+      }
+      this.$forceUpdate();
+    },
+    //底部轮播-实验室人员列表
+    reqLaboratoryUser() {
+      for (let i = 0; i < 10; i++) {
+        let demodata = { ...this.bottomLoopPlay[0] };
+        demodata.index = i + 1;
+        this.bottomLoopPlay.push(demodata);
+      }
+      this.$forceUpdate();
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -226,10 +345,165 @@ export default {
   height: inherit;
   font-size: 0.14rem;
 }
+//顶部实验室轮播
 .top-loopPlay {
   padding-top: 0.14rem;
+
   height: 17%;
+
+  .pub-box {
+    position: relative;
+    padding: 0 0.7rem;
+  }
   // background: red;
+  .loop-button-prev {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    left: 0;
+    top: 0;
+    width: 0.7rem;
+    justify-content: flex-end;
+    img {
+      cursor: pointer;
+      width: 0.6rem;
+      height: 0.6rem;
+      margin-right: 0.1rem;
+    }
+    &::after {
+      position: absolute;
+      content: "";
+      top: 0;
+      right: 0;
+      width: 0.3rem;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0.59)
+      );
+    }
+  }
+  .loop-button-next {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    right: 0;
+    top: 0;
+    width: 0.7rem;
+
+    img {
+      cursor: pointer;
+      width: 0.6rem;
+      height: 0.6rem;
+      transform: rotateY(180deg);
+      margin-left: 0.1rem;
+    }
+    &::before {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      width: 0.3rem;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.59),
+        rgba(255, 255, 255, 0)
+      );
+    }
+  }
+  /deep/.swiper-container {
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+    // padding: 90px 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /deep/.swiper-slide {
+    box-sizing: border-box;
+    padding: 0.2rem;
+    border-radius: 0.1rem;
+    background: linear-gradient(45deg, #4654d7 1%, #03ffab 98%);
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #ffffff;
+    opacity: 0.7;
+    width: 3.74rem;
+    height: 100%;
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    transition-property: all;
+    .top-loop-item {
+      height: 1.31rem;
+      background: #f8f8fa;
+      border-radius: 0.1rem;
+      padding: 0.2rem;
+      width: 100%;
+      display: flex;
+      box-sizing: border-box;
+      .topLoop-item-left {
+        height: 100%;
+        flex-shrink: 0;
+        width: 28.7%;
+        background: url("/images/laboratory.png") no-repeat 100% 100%;
+        margin-right: 0.2rem;
+      }
+      .topLoop-item-right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        text-align: left;
+        color: #000000;
+        .right-item {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          font-size: 0.16rem;
+          font-family: PingFang SC, PingFang SC-Bold;
+          font-weight: 700;
+          text-align: left;
+          color: #000000;
+        }
+
+        .item-status {
+          position: relative;
+          padding-left: 0.26rem;
+
+          &::before {
+            position: absolute;
+            content: "";
+            top: 0.03rem;
+            left: 0;
+            width: 0.16rem;
+            height: 0.16rem;
+            background: #00ff21;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
+  }
+  .top-loop-active {
+    // border: 2px solid #ffffff;
+    opacity: 1;
+  }
 }
 .center-main {
   display: flex;
@@ -390,15 +664,170 @@ export default {
       height: 37%;
       padding-top: 0.2rem;
       display: flex;
+      //实验室人员信息-底部轮播
       .center-down-left {
+        flex-shrink: 0;
+        float: left;
         width: 67%;
         height: 100%;
         padding: 0.14rem 0.2rem;
         border-radius: 0.1rem;
         background-color: rgba(98, 228, 182, 0.7);
+        position: relative;
+        .pub-box {
+          // position: relative;
+          // padding: 0 0.45rem;
+          display:flex;
+          flex-direction: column;
+        }
+        .bottomLoopPlay-box {
+          margin-top: 0.38rem;
+          position: relative;
+          flex: 1;
+          padding: 0 0.35rem;
+          width: 6.28rem;
+          box-sizing: border-box;
+        }
+        // background: red;
+        .loop-button-prev {
+          position: absolute;
+          display: flex;
+          align-items: center;
+          height: 100%;
+          left: -0.1rem;
+          top: 0;
+          width: 0.45rem;
+          justify-content: flex-end;
+          img {
+            cursor: pointer;
+            width: 0.3rem;
+            height: 0.3rem;
+            margin-right: 0.1rem;
+          }
+          &::after {
+            position: absolute;
+            content: "";
+            top: 0;
+            right: 0;
+            width: 0.3rem;
+            height: 100%;
+            background: linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.03),
+              rgba(255, 255, 255, 0) 45%,
+              rgba(255, 255, 255, 0.39)
+            );
+          }
+        }
+        .loop-button-next {
+          position: absolute;
+          display: flex;
+          align-items: center;
+          height: 100%;
+          right: -0.1rem;
+          top: 0;
+          width: 0.45rem;
+
+          img {
+            cursor: pointer;
+            width: 0.3rem;
+            height: 0.3rem;
+            transform: rotateY(180deg);
+            margin-left: 0.1rem;
+          }
+          &::before {
+            position: absolute;
+            content: "";
+            top: 0;
+            left: 0;
+            width: 0.3rem;
+            height: 100%;
+            background: linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.39),
+              rgba(255, 255, 255, 0) 45%,
+              rgba(255, 255, 255, 0)
+            );
+          }
+        }
+        /deep/.swiper-container {
+          // width: 100%;
+          box-sizing: border-box;
+          height: 100%;
+          // padding: 90px 0;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        /deep/.swiper-slide {
+          box-sizing: border-box;
+          padding: 0.2rem 0.1rem;
+          border-radius: 0.1rem;
+          background: rgba(248, 248, 250, 1);
+          border: 2px solid #ffffff;
+          border-radius: 10px;
+          text-align: center;
+          border: 2px solid #ffffff;
+          opacity: 0.7;
+          width: 3.24rem;
+          height: 100%;
+          /* Center slide text vertically */
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: -webkit-flex;
+          display: flex;
+          -webkit-box-pack: center;
+          -ms-flex-pack: center;
+          -webkit-justify-content: center;
+          justify-content: center;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          -webkit-align-items: center;
+          align-items: center;
+          transition-property: all;
+          .bottom-loop-item {
+            // height: 1.31rem;
+            height: 100%;
+
+            border-radius: 0.1rem;
+            width: 100%;
+            display: flex;
+            box-sizing: border-box;
+            .bottomLoop-item-left {
+              height: 100%;
+              flex-shrink: 0;
+              width: 22%;
+              background: url("/images/icon-用户.svg") no-repeat 100% 100%;
+              margin-right: 0.1rem;
+            }
+            .bottomLoop-item-right {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-around;
+              text-align: left;
+              color: #000000;
+              .right-item {
+                width: 100%;
+                display: flex;
+                // flex-wrap: wrap;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                word-break: break-all;
+                font-size: 0.12rem;
+                font-family: PingFang SC, PingFang SC-Medium;
+                font-weight: 500;
+                text-align: left;
+                color: #000000;
+              }
+            }
+          }
+        }
       }
       .center-down-right {
         padding-left: 0.2rem;
+        flex-shrink: 0;
+        float: left;
         width: 33%;
         .pub-box {
           border-radius: 0.1rem;
