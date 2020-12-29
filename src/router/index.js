@@ -12,7 +12,7 @@ const routes = [{
   {
     path: '/screen-small',
     name: 'screen-small',
-    component: () => import('@/views/screen-big')
+    component: () => import('@/views/screen-small')
 
   },
 ]

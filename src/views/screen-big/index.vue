@@ -259,6 +259,7 @@ export default {
       },
     ];
     return {
+      id:'7971229947421458432',//s测试-id
       tableData: tableData,
       swiperOptions: {
         // navigation: {
@@ -429,7 +430,7 @@ export default {
     border-radius: 0.1rem;
     background: linear-gradient(45deg, #4654d7 1%, #03ffab 98%);
     border: 2px solid #ffffff;
-    border-radius: 10px;
+    border-radius: 0.1rem;
     text-align: center;
     border: 2px solid #ffffff;
     opacity: 0.7;
@@ -670,7 +671,7 @@ export default {
         float: left;
         width: 67%;
         height: 100%;
-        padding: 0.14rem 0.2rem;
+        padding: 0.14rem 0.2rem 0.4rem 0.2rem;
         border-radius: 0.1rem;
         background-color: rgba(98, 228, 182, 0.7);
         position: relative;
@@ -764,7 +765,7 @@ export default {
           border-radius: 0.1rem;
           background: rgba(248, 248, 250, 1);
           border: 2px solid #ffffff;
-          border-radius: 10px;
+          border-radius: 0.1rem;
           text-align: center;
           border: 2px solid #ffffff;
           opacity: 0.7;
