@@ -1,26 +1,23 @@
 <template>
   <div class="roomDesc">
-    <!-- 下半部分 -->
-
     <div class="main-down-title">
-      <img class="pub-title-icon" src="/images/icon-安全.svg" />
-      实验室安全需知
+      <img class="pub-title-icon" src="/images/icon-流程.svg" />
+      操作流程
     </div>
 
     <!-- <div class="main-down-content"> -->
-    <pre>{{ data.safetyInstruction || "无" }}</pre>
+    <pre> {{data.laboratoryIntroduction||'无'}}</pre
+    >
     <!-- </div> -->
   </div>
 </template>
 <script>
 export default {
-  props: {
-    data: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
+  props:{
+    data:{
+      type:Object,
+      default(){return{}}
+    }
   },
   data() {
     return {};

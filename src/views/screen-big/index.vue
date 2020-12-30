@@ -2,6 +2,7 @@
   <!-- 大屏-41寸 -->
   <div class="screen-big">
     <Header />
+    <treeEl @treeClick="treeClick" />
     <!--  顶部实验室轮播 -->
     <div class="top-loopPlay">
       <div class="pub-box">
@@ -11,28 +12,38 @@
         <div class="loop-button-next">
           <img src="/images/loop-left.svg" alt="" @click="swiper.slideNext()" />
         </div>
-        <swiper ref="mySwiper" :options="swiperOptions">
-    
+        <swiper ref="mySwiper" :options="swiperOptions" key="mySwiper1231">
           <swiper-slide
-            :class="{ 'top-loop-active': topLoopId === item.index }"
+            :class="{
+              'top-loop-active':
+                currentLaboratory.laboratoryInfoId === item.laboratoryInfoId,
+            }"
             v-for="(item, index) in topLoopPlay"
             :key="index"
-            @click.native="topLoopId = item.index"
+            @click.native="currentLaboratory = { ...item }"
           >
             <div class="top-loop-item">
               <div class="topLoop-item-left"></div>
 
               <div class="topLoop-item-right">
-                <div class="right-item">实验室名称：{{ item.unitName }}</div>
-                <div class="right-item">实验室类型：{{ item.type }}</div>
+                <div class="right-item">
+                  实验室名称：{{ item.laboratoryName }}
+                </div>
+                <div class="right-item">
+                  实验室类型：{{ item.laboratoryTypeValue }}
+                </div>
                 <div class="right-item">
                   实验室状态：
-                  <div class="item-status">{{ item.status }}</div>
+                  <div
+                    :class="`item-status item-status${item.laboratoryStatus}`"
+                  >
+                    {{ item.laboratoryStatus == 1 ? "使用中" : "未使用" }}
+                  </div>
                 </div>
               </div>
             </div>
           </swiper-slide>
-        </swiper>  
+        </swiper>
       </div>
     </div>
 
@@ -48,12 +59,23 @@
           </div>
           <div class="userInfo-main">
             <div class="user-head">
-              <img src="/images/icon-用户.svg" alt="" />
+              <img
+                :src="currentLaboratory.userAvatar || '/images/icon-用户.svg'"
+                alt=""
+              />
             </div>
             <div class="userInfo-desc">
-              <div class="desc-item">负责人姓名：XXX</div>
-              <div class="desc-item">联系方式：XXX</div>
-              <div class="desc-item">负责实验室：XXX</div>
+              <div class="desc-item">
+                负责人姓名：{{ currentLaboratory.laboratoryAdminName || "-" }}
+              </div>
+              <div class="desc-item">
+                联系方式：{{ currentLaboratory.laboratoryAdminPhone || "-" }}
+              </div>
+              <div class="desc-item">
+                负责实验室：{{
+                  currentLaboratory.responsibleForLaboratory || "-"
+                }}
+              </div>
             </div>
           </div>
         </div>
@@ -65,10 +87,7 @@
               实验室介绍
             </div>
             <div class="left-desc-content">
-              <pre>
-复制文本
-滴答滴答……雨打着窗，我不耐烦的把那道解了许久也没解出的数学题丢在一旁，支着脑袋，专心的看起窗外的风景来。 离我窗台的不远处长着一棵大树，郁郁葱葱、枝繁叶茂，无一不显现出这棵树的生机。也许是这棵树安宁的绿色渲染了我，这几天的烦闷竟有点消逝。 咦，似乎有什么动静。 我定盯一看，是一只蛹，一只将要破茧而出的小生物。我并不知道它的名字。 它挣扎着，连带着树叶也在跟着颤抖，碧绿的叶子上的水珠也被晃了下来。一滴、两滴，如同打在我窗上的声音一样好听，我想。 几分钟过去了，树叶还在颤抖，只是没有水珠的滴落了，只剩它一个，像是一个冬夜晚回家的孩子，害怕挨打，抱住自己的双臂在瑟瑟发抖。它心里一定是焦急的，我想。 二十多分钟，它终于探出了小半的身子，然而树叶却停止了颤抖。它，是要放弃吗？它不能放弃！ 我直直的望着它，思绪却飘回那个雨天。 那天，是和这会一样的天气，阴雨绵绵，烟雾朦胧，竟让人徒生几分诗意。就是这样的一个阴雨天气，我却经历了一个心灵变化的过程。 可能是因为在家里是最小的那一个，所以很多事处理都欠妥当，比如，人情世故。于是，上周我便和小A发生了争执，本来是一件小事，但发展到后来连同学之间的友谊都有了裂缝。 事情是这样的，小A向我请教一道数学题，当时我正在解，便很不耐烦的说：“吵什么吵！不看见我正在解吗！”也许是我语气太过恶劣，小A再没有多说</pre
-              >
+              <pre>{{ currentLaboratory.laboratoryIntroduction || "-" }}</pre>
             </div>
           </div>
         </div>
@@ -110,12 +129,39 @@
                       : 'rgba(255,255,255,0.5)'
                   } ;`"
                 >
-                  <td>{{ item.index }}</td>
-                  <td>{{ item.unit }}</td>
-                  <td>{{ item.date }}</td>
-                  <td>{{ item.user }}</td>
-                  <td>{{ item.status }}</td>
-                  <td>{{ item.desc }}</td>
+                  <td>
+                    <div class="cell">
+                      {{ index + 1 }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell">
+                      {{ item.laboratoryName }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell">
+                      {{ item.reserveTime }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell">
+                      {{ item.personnel || "" }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell">
+                      <span v-if="item.reserveStatus == 0">审核中</span>
+                      <span v-else-if="item.reserveStatus == 1">预约成功</span>
+                      <span v-else-if="item.reserveStatus == 2">预约失败</span>
+                      <span v-else>-</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell">
+                      {{ item.remarks || "-" }}
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -148,26 +194,31 @@
                 <swiper ref="mySwiperBottom" :options="swiperOptions">
                   <!-- laboratory-card -->
                   <swiper-slide
-                    :class="{
-                      'bottom-loop-active': bottomLoopId === item.index,
-                    }"
                     v-for="(item, index) in bottomLoopPlay"
                     :key="index"
-                    @click.native="bottomLoopId = item.index"
                   >
                     <div class="bottom-loop-item">
-                      <div class="bottomLoop-item-left"></div>
+                      <div class="bottomLoop-item-left">
+                        <img
+                          :src="item.userAvatar || '/images/icon-用户.svg'"
+                          alt=""
+                        />
+                      </div>
 
                       <div class="bottomLoop-item-right">
-                        <div class="right-item">姓名：{{ item.name }}</div>
-                        <div class="right-item">开始时间：{{ item.start }}</div>
+                        <div class="right-item">
+                          姓名：{{ item.userName || "-" }}
+                        </div>
+                        <div class="right-item">
+                          开始时间：{{ item.startTime || "" }}
+                        </div>
                         <div class="right-item">
                           结束时间：
-                          {{ item.edd }}
+                          {{ item.endTime || "-" }}
                         </div>
                         <div class="right-item">
                           备注：
-                          {{ item.desc }}
+                          {{ item.remarks || "-" }}
                         </div>
                       </div>
                     </div>
@@ -196,28 +247,7 @@
             安全需知
           </div>
           <div class="security-desc-content">
-            <pre>
-  滴答滴答……雨打着窗，我不耐烦的把那道解了许久也没解出的数学题丢在一旁，支着脑袋，专心的看起窗外的风景来。
-  离我窗台的不远处长着一棵大树，郁郁葱葱、枝繁叶茂，无一不显现出这棵树的生机。也许是这棵树安宁的绿色渲染了我，这几天的烦闷竟有点消逝。
-  咦，似乎有什么动静。
-  我定盯一看，是一只蛹，一只将要破茧而出的小生物。我并不知道它的名字。
-  它挣扎着，连带着树叶也在跟着颤抖，碧绿的叶子上的水珠也被晃了下来。一滴、两滴，如同打在我窗上的声音一样好听，我想。
-  几分钟过去了，树叶还在颤抖，只是没有水珠的滴落了，只剩它一个，像是一个冬夜晚回家的孩子，害怕挨打，抱住自己的双臂在瑟瑟发抖。它心里一定是焦急的，我想。
-  二十多分钟，它终于探出了小半的身子，然而树叶却停止了颤抖。它，是要放弃吗？它不能放弃！
-  我直直的望着它，思绪却飘回那个雨天。
-  那天，是和这会一样的天气，阴雨绵绵，烟雾朦胧，竟让人徒生几分诗意。就是这样的一个阴雨天气，我却经历了一个心灵变化的过程。
-  可能是因为在家里是最小的那一个，所以很多事处理都欠妥当，比如，人情世故。于是，上周我便和小A发生了争执，本来是一件小事，但发展到后来连同学之间的友谊都有了裂缝。
-  事情是这样的，小A向我请教一道数学题，当时我正在解，便很不耐烦的说：“吵什么吵！不看见我正在解吗！”也许是我语气太过恶劣，小A再没有多说什么，拿着习题就走了。神色也有些愠怒。
-  神经大条的我并没有认识到这一点，我醒悟过来时，便是小A不搭理我时了。我一向好面子，自认为拉不下脸来去跟小A道歉，明明就是一件小事，至于这么在乎吗？
-  “啪”，一滴雨点滴落在我的头上，我猛地回过神来，却发现那只生物——蝶，故且算做蝶吧，已经快要挣脱了。“哗啦”树叶猛烈摇动，再看，已是蝶飞起来了！
-  它没有放弃，真好；它挣脱了束缚，真好；它终于重生，真好！
-  看着它留在树叶上的蛹壳，我心生感慨：我们都要奋力挣脱那些束缚的东西，就比如说，我们自认为很重要的面子。
-  很多东西，只有舍弃它，才能获得新生。
-  那一刻我懂了；先要伸出言和之手，放下所谓的面子，才能在成长的道路上，长得更高、飞得更远！
- 神经大条的我并没有认识到这一点，我醒悟过来时，便是小A不搭理我时了。我一向好面子，自认为拉不下脸来去跟小A道歉，明明就是一件小事，至于这么在乎吗？
-  “啪”，一滴雨点滴落在我的头上，我猛地回过神来，却发现那只生物——蝶，故且算做蝶吧，已经快要挣脱了。“哗啦”树叶猛烈摇动，再看，已是蝶飞起来了！
-  它没有放弃，真好；它挣脱了束缚，真好；它终于重生，真好！</pre
-            >
+            <pre>{{ currentLaboratory.safetyInstruction }}</pre>
           </div>
         </div>
         <!-- 信息公告 -->
@@ -227,6 +257,22 @@
               <img class="pub-title-icon" src="/images/icon-音量.svg" />
               信息公告
             </div>
+
+            <div class="message-box">
+              <div class="message-title">{{ noticeData.messageSummary }}</div>
+              <pre>{{ noticeData.messageContent }}</pre>
+            </div>
+            <div class="message-bottom">
+              <el-pagination
+                background
+                layout="prev, pager, next"
+                :current-count="noticePage.pageCurrent"
+                :page-size="noticePage.pageRows"
+                :total="noticePage.total"
+                @current-change="reqPostLaboratoryNotice"
+              >
+              </el-pagination>
+            </div>
           </div>
         </div>
       </div>
@@ -235,64 +281,48 @@
 </template>
 <script>
 import Header from "@/components/header/index.vue";
+import { Message } from "element-ui";
 // import {asd} from "@/util/index.js";
+import {
+  postLaboratoryInfo,
+  postLaboratoryUser,
+  postLaboratoryReserve,
+  postLaboratoryNotice,
+} from "@/api";
+import treeEl from "@/components/treeEl";
 export default {
-  components: { Header },
+  components: { Header, treeEl },
 
   data() {
     const tableData = [
-      {
-        index: 1,
-        unit: "实验室111",
-        date: "预约时间",
-        user: "人员",
-        status: "审核中",
-        desc: "备注123123",
-      },
-      {
-        index: 2,
-        unit: "实验室111222",
-        date: "预约时间222",
-        user: "人员222",
-        status: "审核中22",
-        desc: "备注123123222222222",
-      },
+      // {
+      //   index: 1,
+      //   laboratoryName: "实验室111",
+      //   reserveTime: "预约时间",
+      //   personnel: "人员",
+      //   reserveStatus: "审核中",//预约状态,0:审核中 1:预约成功 2:预约失败
+      //   remarks: "备注123123",
+      // },
     ];
     return {
-      id:'7971229947421458432',//s测试-id
-      tableData: tableData,
+      laboratoryList: [],
+      noticePage: {
+        total: 0,
+        pageCurrent: 1,
+        pageRows: 1,
+      },
+      currentLaboratory: {},
+      tableData: [] || tableData,
       swiperOptions: {
-        // navigation: {
-        //   nextEl: ".swiper-button-next",
-        //   prevEl: ".swiper-button-prev",
-        // },
         loop: false,
         speed: 1500,
         slidesPerView: "auto",
         spaceBetween: 15,
-        // centeredSlides: true,
         watchSlidesProgress: true,
       },
-      topLoopId: "",
-
-      topLoopPlay: [
-        {
-          index: 1,
-          unitName: "",
-          type: "阿松大",
-          status: "使用中",
-        },
-      ],
-      bottomLoopId: "",
-      bottomLoopPlay: [
-        {
-          index: 1,
-          name: "张三",
-          start: "2020-12-12",
-          end: "2020-12-13",
-          desc: "性格阳关多金大力",
-        },
-      ],
+      noticeData: {},
+      topLoopPlay: [],
+      bottomLoopPlay: [],
     };
   },
   computed: {
@@ -303,39 +333,87 @@ export default {
       return this.$refs.mySwiperBottom.$swiper;
     },
   },
-  mounted() {
-    // this.swiper.slideTo(3, 1000, false);
-    this.reqAppointment();
-    this.reqLaboratory();
-    this.reqLaboratoryUser();
+  watch: {
+    currentLaboratory: {
+      handler(newV, old) {
+        console.log(newV);
+        if (newV.laboratoryInfoId) {
+          this.reqPostLaboratoryUser();
+          this.reqPostLaboratoryReserve();
+          this.reqPostLaboratoryNotice();
+        }
+      },
+      immediate: true,
+      deep: true,
+    },
   },
+  mounted() {},
   methods: {
-    //预约
-    reqAppointment() {
-      for (let i = 0; i < 10; i++) {
-        let demodata = { ...this.tableData[0] };
-        demodata.index = i + 1;
-        this.tableData.push(demodata);
-      }
-      this.$forceUpdate();
+    //公告分页
+    reqPostLaboratoryNotice(page) {
+      const formdata = {
+        laboratoryInfoId: this.currentLaboratory.laboratoryInfoId,
+        pageCurrent: page || 1,
+        pageRows: 1,
+      };
+      postLaboratoryNotice(formdata)
+        .then((res) => {
+          const { rows, total, pageCurrent, pageRows } = res.data;
+          this.noticeData = rows[0];
+          this.noticePage = { total, pageCurrent, pageRows };
+        })
+        .catch((err) => {
+          this.noticeData = {};
+          this.noticePage = { total: 0, pageCurrent: 1, pageRows: 1 };
+        });
     },
-    //顶部轮播-实验室列表
-    reqLaboratory() {
-      for (let i = 0; i < 10; i++) {
-        let demodata = { ...this.topLoopPlay[0] };
-        demodata.index = i + 1;
-        this.topLoopPlay.push(demodata);
-      }
-      this.$forceUpdate();
+    //预约信息查询
+    reqPostLaboratoryReserve() {
+      postLaboratoryReserve({
+        pageCurrent: 1,
+        pageRows: 1000,
+        laboratoryInfoId: this.currentLaboratory.laboratoryInfoId,
+      })
+        .then((res) => {
+          const { data } = res;
+          this.tableData = data.rows || [];
+        })
+        .catch((err) => {
+          this.tableData = [];
+        });
     },
-    //底部轮播-实验室人员列表
-    reqLaboratoryUser() {
-      for (let i = 0; i < 10; i++) {
-        let demodata = { ...this.bottomLoopPlay[0] };
-        demodata.index = i + 1;
-        this.bottomLoopPlay.push(demodata);
-      }
-      this.$forceUpdate();
+    //实验室人员
+    reqPostLaboratoryUser() {
+      postLaboratoryUser({
+        laboratoryInfoId: this.currentLaboratory.laboratoryInfoId,
+      })
+        .then((res) => {
+          this.bottomLoopPlay = res.data || [];
+          this.mySwiperBottom.slideTo(0, 500);
+        })
+        .catch((err) => {
+          this.bottomLoopPlay = [];
+        });
+    },
+
+    treeClick(list) {
+      console.log(list);
+      this.laboratoryList = list;
+      const ids = list.map((val) => val.placeInfoId);
+      // this.currentId = list[0];
+      this.reqpostLaboratoryInfo(ids);
+    },
+    //实验室信息-分页
+    reqpostLaboratoryInfo(ids) {
+      postLaboratoryInfo({
+        pageCurrent: 1,
+        pageRows: 1000,
+        placeInfoIdArray: ids,
+      }).then((res) => {
+        const { data } = res;
+        this.topLoopPlay = data.rows || [];
+        this.currentLaboratory = { ...this.topLoopPlay[0] };
+      });
     },
   },
 };
@@ -459,9 +537,10 @@ export default {
       display: flex;
       box-sizing: border-box;
       .topLoop-item-left {
-        height: 100%;
+        border-radius: 0.95rem;
+        height: 0.95rem;
         flex-shrink: 0;
-        width: 28.7%;
+        width: 0.95rem;
         background: url("/images/laboratory.png") no-repeat 100% 100%;
         margin-right: 0.2rem;
       }
@@ -494,8 +573,20 @@ export default {
             left: 0;
             width: 0.16rem;
             height: 0.16rem;
-            background: #00ff21;
+
             border-radius: 50%;
+          }
+        }
+        .item-status0 {
+          color: #e91127;
+          &::before {
+            background: #e91127;
+          }
+        }
+        .item-status1 {
+          color: #00ff21;
+          &::before {
+            background: #00ff21;
           }
         }
       }
@@ -514,6 +605,7 @@ export default {
     width: 21.5%;
     flex-shrink: 0;
     .left-user {
+      overflow-y: auto;
       height: 24%;
       padding: 0.16rem 0.2rem;
       background: rgba(98, 228, 182, 0.7);
@@ -526,6 +618,7 @@ export default {
         display: flex;
         margin-top: 0.14rem;
         .user-head {
+          flex-shrink: 0;
           width: 1rem;
           height: 1rem;
           background: #ffffff;
@@ -543,6 +636,7 @@ export default {
           justify-content: space-around;
           text-align: left;
           color: #000000;
+          overflow-y: auto;
           .desc-item {
             width: 100%;
             display: flex;
@@ -603,13 +697,16 @@ export default {
         width: 100%;
         position: relative;
         margin-top: 0.2rem;
+        overflow-y: auto;
         table {
-          position: absolute;
+          // position: absolute;
           border-collapse: collapse;
+          table-layout: fixed;
+          width: 100%;
           top: 0;
           left: 0;
           width: 100%;
-          height: 100%;
+          // height: 100%;
           thead {
             td {
               border: 1px solid rgba(255, 255, 255, 0.5);
@@ -620,20 +717,20 @@ export default {
           }
 
           tbody {
-            position: absolute;
-            top: 0.4rem;
-            left: 0;
-            width: 100%;
-            height: calc(100% - 0.4rem);
-            overflow-y: auto;
           }
           td {
             height: 0.36rem;
-            line-height: 0.36;
-            white-space: nowrap;
+            box-sizing: border-box;
             text-overflow: ellipsis;
-            overflow: hidden;
-            word-break: break-all;
+            vertical-align: middle;
+            .cell {
+              box-sizing: border-box;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: normal;
+              word-break: break-all;
+            }
+
             box-sizing: border-box;
             padding: 0 0.1rem;
             text-align: center;
@@ -643,19 +740,19 @@ export default {
               width: 6%;
             }
             td:nth-child(2) {
-              width: 10%;
+              width: 20%;
             }
             td:nth-child(3) {
-              width: 16%;
+              width: 25%;
             }
             td:nth-child(4) {
-              width: 36%;
+              width: 25%;
             }
             td:nth-child(5) {
-              width: 11%;
+              width: 9%;
             }
             td:nth-child(6) {
-              width: 21%;
+              width: 15%;
             }
           }
         }
@@ -678,7 +775,7 @@ export default {
         .pub-box {
           // position: relative;
           // padding: 0 0.45rem;
-          display:flex;
+          display: flex;
           flex-direction: column;
         }
         .bottomLoopPlay-box {
@@ -794,10 +891,17 @@ export default {
             display: flex;
             box-sizing: border-box;
             .bottomLoop-item-left {
+              img {
+                width: 0.7rem;
+                height: 0.7rem;
+                border-radius: 0.7rem;
+              }
               height: 100%;
               flex-shrink: 0;
               width: 22%;
-              background: url("/images/icon-用户.svg") no-repeat 100% 100%;
+              min-width: 0.7rem;
+              min-height: 0.7rem;
+              // background: url("/images/icon-用户.svg") no-repeat 100% 100%;
               margin-right: 0.1rem;
             }
             .bottomLoop-item-right {
@@ -878,6 +982,37 @@ export default {
         border-radius: 0.1rem;
         padding: 0.14rem 0.2rem;
         background-color: rgba(57, 110, 171, 0.7);
+      }
+      .message-box {
+        margin-top: 0.2rem;
+        width: 100%;
+        height: 2.41rem;
+        // opacity: 0.5;
+        background: rgba(248, 248, 250, 0.5);
+        border-radius: 0.1rem;
+        padding: 0.16rem;
+        .message-title {
+          height: 0.22rem;
+          font-size: 0.16rem;
+          font-family: PingFang SC, PingFang SC-Bold;
+          font-weight: 700;
+          text-align: left;
+          color: #252566;
+        }
+        pre {
+          margin-top: 0.1rem;
+          padding-bottom: 0.27rem;
+          overflow-y: auto;
+          height: 1.66rem;
+          font-size: 0.14rem;
+          font-family: PingFang SC, PingFang SC-Medium;
+          text-align: left;
+          color: #252566;
+        }
+      }
+      .message-bottom {
+        margin-top: 0.2rem;
+        text-align: center;
       }
     }
   }

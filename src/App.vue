@@ -5,6 +5,7 @@
 </template>
 
 <script>
+
 import { mutations, store } from "@/store.js";
 import { computedFontSize } from "./htmlFontSize";
 export default {
