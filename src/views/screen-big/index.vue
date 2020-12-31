@@ -55,7 +55,7 @@
         <div class="left-user">
           <div class="pub-title">
             <img class="pub-title-icon" src="/images/icon-用户.svg" />
-            实验室负责2人
+            实验室负责人
           </div>
           <div class="userInfo-main">
             <div class="user-head">
@@ -551,8 +551,13 @@ export default {
         justify-content: space-around;
         text-align: left;
         color: #000000;
+        max-height: 0.95rem;
+        overflow-y: auto;
         .right-item {
           width: 100%;
+          min-height: 0.25rem; 
+          max-height: 0.45rem;
+          overflow: hidden;
           display: flex;
           flex-wrap: wrap;
           font-size: 0.16rem;
@@ -560,6 +565,7 @@ export default {
           font-weight: 700;
           text-align: left;
           color: #000000;
+          
         }
 
         .item-status {
@@ -632,12 +638,15 @@ export default {
         }
         .userInfo-desc {
           display: flex;
+          max-height: 1.1rem;
+          overflow-y: auto;
           flex-direction: column;
           justify-content: space-around;
           text-align: left;
           color: #000000;
           overflow-y: auto;
           .desc-item {
+            min-height: 0.3rem;
             width: 100%;
             display: flex;
             flex-wrap: wrap;
@@ -905,6 +914,8 @@ export default {
               margin-right: 0.1rem;
             }
             .bottomLoop-item-right {
+              max-height: 1.26rem;
+              overflow-y: auto;
               flex: 1;
               display: flex;
               flex-direction: column;
@@ -914,11 +925,13 @@ export default {
               .right-item {
                 width: 100%;
                 display: flex;
+                flex-wrap: wrap;
+                min-height: 0.3rem;
                 // flex-wrap: wrap;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                word-break: break-all;
+                // white-space: nowrap;
+                // text-overflow: ellipsis;
+                // overflow: hidden;
+                // word-break: break-all;
                 font-size: 0.12rem;
                 font-family: PingFang SC, PingFang SC-Medium;
                 font-weight: 500;

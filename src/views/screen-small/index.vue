@@ -228,10 +228,12 @@ export default {
   overflow: hidden;
   padding: 0 0.3rem;
   font-size: 0.14rem;
+  
   // opacity: 0.7;
   .screen-small-main {
     margin: 0.13rem 0 0.52rem 0;
     height: 9.6rem;
+    display:flex;
   }
   /deep/.main-down-title {
     height: 0.59rem;
@@ -248,7 +250,8 @@ export default {
     }
   }
   .left-nav {
-    float: left;
+    // float: left;
+    flex-shrink: 0;
     height: 9.6rem;
     width: 2.44rem;
     background: rgba(98, 228, 182, 1);
